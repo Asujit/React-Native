@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "expo-checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { jsxs } from "react/jsx-runtime";
 
 type ToDoType = {
   id: number;
@@ -22,52 +23,64 @@ type ToDoType = {
 };
 
 export default function Index() {
-  const todoData = [
-    {
-      id: 1,
-      title: "TODO 1",
-      isDne: false,
-    },
-    {
-      id: 2,
-      title: "TODO 2",
-      isDne: true,
-    },
-    {
-      id: 3,
-      title: "TODO 3",
-      isDne: false,
-    },
-    {
-      id: 4,
-      title: "TODO 4",
-      isDne: false,
-    },
-    {
-      id: 5,
-      title: "TODO 5",
-      isDne: false,
-    },
-  ];
-  const [todos, setTodo] = useState<ToDoType[]>(todoData);
+  const [todos, setTodo] = useState<ToDoType[]>([]);
   const [todoText, setTodoText] = useState<string>("");
 
-  const addTodo = async() => {
-    try{
-    const newTodo = {
-      id: Math.random(),
-      title: todoText,
-      isDne: false
+  useEffect(() => {
+    const getTodos = async () => {
+      try {
+        const todos = await AsyncStorage.getItem("my-todo");
+        if (todos !== null) {
+          setTodo(JSON.parse(todos));
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
-    todos.push(newTodo);
-    setTodo(todos);
-    await AsyncStorage.setItem('my-todo', JSON.stringify(todos));
-    setTodoText('');
-    Keyboard.dismiss();
-  } catch (error){
-    console.log(error)
-  }
-}
+    getTodos();
+  }, []);
+
+  const addTodo = async () => {
+    try {
+      const newTodo = {
+        id: Math.random(),
+        title: todoText,
+        isDne: false,
+      };
+      todos.push(newTodo);
+      setTodo(todos);
+      await AsyncStorage.setItem("my-todo", JSON.stringify(todos));
+      setTodoText("");
+      Keyboard.dismiss();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteTodo = async (id: number) => {
+    try {
+      const newTodo = todos.filter((todo) => todo.id !== id);
+      await AsyncStorage.setItem("my-todo", JSON.stringify(newTodo));
+      setTodo(newTodo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDone = async (id: number) => {
+    try {
+      const newTodo = todos.map((todo) => {
+        if (todo.id === id) {
+          todo.isDne = !todo.isDne;
+        }
+        return todo;
+      });
+      await AsyncStorage.setItem("my-todo", JSON.stringify(newTodo));
+      setTodo(newTodo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -103,7 +116,9 @@ export default function Index() {
       <FlatList
         data={[...todos].reverse()}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <TodoItem todo={item} />}
+        renderItem={({ item }) => (
+          <TodoItem todo={item} deleteTodo={deleteTodo} handleTodo={handleDone}/>
+        )}
       />
       <KeyboardAvoidingView
         style={styles.footer}
@@ -125,9 +140,17 @@ export default function Index() {
   );
 }
 
-const TodoItem = ({ todo }: { todo: ToDoType }) => (
+const TodoItem = ({
+  todo,
+  deleteTodo,
+  handleTodo,
+}: {
+  todo: ToDoType;
+  deleteTodo: (id: number) => void;
+  handleTodo: (id: number) => void;
+}) => (
   <View style={styles.todoContainer}>
-    <Checkbox value={todo.isDne} />
+    <Checkbox value={todo.isDne} onValueChange={() => handleTodo(todo.id)}/>
     <Text
       style={[
         styles.todoText,
@@ -138,7 +161,7 @@ const TodoItem = ({ todo }: { todo: ToDoType }) => (
     </Text>
     <TouchableOpacity
       onPress={() => {
-        alert("Deleted " + todo.id);
+        deleteTodo(todo.id);
       }}
     >
       <Ionicons name="trash" size={20} color={"red"} />

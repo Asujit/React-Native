@@ -25,6 +25,8 @@ type ToDoType = {
 export default function Index() {
   const [todos, setTodo] = useState<ToDoType[]>([]);
   const [todoText, setTodoText] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [oldTodos, setOldTodos] = useState<ToDoType[]>([]);
 
   useEffect(() => {
     const getTodos = async () => {
@@ -32,6 +34,7 @@ export default function Index() {
         const todos = await AsyncStorage.getItem("my-todo");
         if (todos !== null) {
           setTodo(JSON.parse(todos));
+          setOldTodos(JSON.parse(todos));
         }
       } catch (error) {
         console.log(error);
@@ -49,6 +52,7 @@ export default function Index() {
       };
       todos.push(newTodo);
       setTodo(todos);
+      setOldTodos(todos);
       await AsyncStorage.setItem("my-todo", JSON.stringify(todos));
       setTodoText("");
       Keyboard.dismiss();
@@ -62,6 +66,7 @@ export default function Index() {
       const newTodo = todos.filter((todo) => todo.id !== id);
       await AsyncStorage.setItem("my-todo", JSON.stringify(newTodo));
       setTodo(newTodo);
+      setOldTodos(newTodo);
     } catch (error) {
       console.log(error);
     }
@@ -77,11 +82,26 @@ export default function Index() {
       });
       await AsyncStorage.setItem("my-todo", JSON.stringify(newTodo));
       setTodo(newTodo);
+      setOldTodos(newTodo);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const onSearch = (query: string) => {
+    if (query == "") {
+      setTodo(oldTodos);
+    } else {
+      const filterTodos = todos.filter((todo) =>
+        todo.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+      );
+      setTodo(filterTodos);
+    }
+  };
+
+  useEffect(() => {
+    onSearch(searchQuery);
+  }, [searchQuery]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -108,6 +128,8 @@ export default function Index() {
         <Ionicons name="search" size={20} color={"black"} />
         <TextInput
           placeholder="Search"
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
           style={styles.bar}
           clearButtonMode="always"
         ></TextInput>
@@ -117,7 +139,11 @@ export default function Index() {
         data={[...todos].reverse()}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TodoItem todo={item} deleteTodo={deleteTodo} handleTodo={handleDone}/>
+          <TodoItem
+            todo={item}
+            deleteTodo={deleteTodo}
+            handleTodo={handleDone}
+          />
         )}
       />
       <KeyboardAvoidingView
@@ -150,7 +176,7 @@ const TodoItem = ({
   handleTodo: (id: number) => void;
 }) => (
   <View style={styles.todoContainer}>
-    <Checkbox value={todo.isDne} onValueChange={() => handleTodo(todo.id)}/>
+    <Checkbox value={todo.isDne} onValueChange={() => handleTodo(todo.id)} />
     <Text
       style={[
         styles.todoText,

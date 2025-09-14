@@ -1,7 +1,16 @@
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Button, Text, View, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import First from "../First";
+import Second from "../Second";
 
+const MyTabs = createMaterialTopTabNavigator({
+  screens: {
+    First: First,
+    Second: Second,
+  },
+});
 export default function CounterScreen() {
   const [count, setCount] = useState(0);
   const [running, setRunning] = useState(true);

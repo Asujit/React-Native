@@ -1,45 +1,15 @@
-import { Link } from "expo-router";
-import { useEffect, useState } from "react";
-import { Button, Text, View, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import First from "../First";
-import Second from "../Second";
+import First from '../First';
+import Second from '../Second';
+import { SafeAreaView } from 'react-native';
 
-const MyTabs = createMaterialTopTabNavigator({
-  screens: {
-    First: First,
-    Second: Second,
-  },
-});
-export default function CounterScreen() {
-  const [count, setCount] = useState(0);
-  const [running, setRunning] = useState(true);
+const Tab = createMaterialTopTabNavigator();
 
-  useEffect(() => {
-    let interval;
-    if (running) {
-      interval = setInterval(() => {
-        setCount((c) => c + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [running]);
-
+export default function index() {
   return (
-    <SafeAreaView>
-    <Text>{count}</Text>
-
-    <View>
-      <Text></Text>
-      <Link href={"/account"}>
-        <Text>Take me to the Account page</Text>
-      </Link>
-
-      <Link href={"/explore"}>
-        <Text>Take me to the explore page</Text>
-      </Link>
-
-    </View>
-    </SafeAreaView>
+    <Tab.Navigator>
+      <Tab.Screen name="Fisrt" component={First} />
+      <Tab.Screen name="Second" component={Second} />
+    </Tab.Navigator>
   );
 }

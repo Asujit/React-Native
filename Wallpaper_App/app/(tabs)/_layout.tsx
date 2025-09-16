@@ -1,34 +1,37 @@
-import { Tabs } from "expo-router";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { Colors } from '@/constants/Colors';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Tabs } from 'expo-router';
+import { useColorScheme } from 'react-native';
 
-export default function Layout() {
+export default function TabLayout() {
+  const theme = useColorScheme() ?? "light";
+
   return (
-    <Tabs screenOptions={{tabBarActiveTintColor: "blue", headerShown: false}}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: Colors[theme].tint, headerShown: false, tabBarStyle: {
+      backgroundColor: Colors[theme].background
+    }}}>
       <Tabs.Screen
-        name="index"
+        name="foryou"
         options={{
-          title: "Home",
-          tabBarIcon: () => <FontAwesome name="home" size={24} />,
+          title: 'For you',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="index"
         options={{
-          title: "Explore",
-          tabBarIcon: () => (
-            <MaterialIcons name="travel-explore" size={24} color="black" />
-          ),
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="feed" color={color} />,
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
-          title: "Account",
-          tabBarIcon: () => (
-            <MaterialIcons name="account-circle" size={24} color="black" />
-          ),
+          title: 'Account',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user" color={color} />,
         }}
       />
+
     </Tabs>
   );
 }

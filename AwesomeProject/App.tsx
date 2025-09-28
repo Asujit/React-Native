@@ -5,6 +5,7 @@ import TextInputComp from './src/Components/TextInput';
 import Scroll from './src/Components/Scroll';
 import Styling from './src/Components/Styling';
 import Flexes from './src/Components/Flexes';
+import Touchable from './src/Components/touchable';
 
 export default function App(): React.JSX.Element {
   return (
@@ -18,6 +19,7 @@ export default function App(): React.JSX.Element {
       <Scroll />
       <Styling/>
       <Flexes/>
+      <Touchable/>
       </ScrollView>
     </View>
   );

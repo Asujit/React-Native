@@ -10,7 +10,7 @@ export default function App() {
   const [todoList, setTodoList] = useState<Todo[]>([]);
 
   const addTodo =(text:string) =>{
-    console.log(text);
+    //console.log(text);
     setTodoList([...todoList, {
       id : Date.now().toString(),
       text,
@@ -18,10 +18,10 @@ export default function App() {
     }])
   }
 
-  console.log(todoList)
+  //console.log(todoList)
 
   const deleteTodo = (id: string)=>{
-    console.log("delete id:", id);
+    //console.log("delete id:", id);
     setTodoList(todoList.filter(item => item.id !== id));
   }
   return (

@@ -9,7 +9,7 @@ interface TodoListitems {
 }
 
 export default function TodoItem({todo, onDelete}:TodoListitems) {
-    console.log(todo, "todo item component")
+    //console.log(todo, "todo item component")
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.todotext}>

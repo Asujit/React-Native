@@ -1,22 +1,37 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Todo } from '../types'
-import $$ProgressBarAndroidNativeComponent from 'react-native/types_generated/Libraries/Components/ProgressBarAndroid/ProgressBarAndroidNativeComponent'
+import TodoEdit from './TodoEdit';
 
 interface TodoListitems {
     todo : Todo;
     onDelete : () =>void;
+    onToggle : () =>void;
+    onEdit : (newText: string) => void;
 }
 
-export default function TodoItem({todo, onDelete}:TodoListitems) {
+export default function TodoItem({todo, onDelete, onEdit, onToggle}:TodoListitems) {
     //console.log(todo, "todo item component")
+
+    const [isEditing, setIsEditing] = useState(false);
+
+    const handleEdit = (newText : string) =>{
+        console.log(newText, "this is from edit");
+        onEdit(newText);
+        setIsEditing(false);
+    }
+
+    if(isEditing){
+        return <TodoEdit todo={todo} onSave={handleEdit} onCancel={() => setIsEditing(false)}/>
+    }
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.todotext}>
+      <TouchableOpacity onPress={onToggle} style={styles.todotext}>
         <Text style={[styles.text, todo?.completed && styles.completeText]}>{todo.text}</Text>
       </TouchableOpacity>
       <View style={styles.btnContainer}>
-        <TouchableOpacity style={[styles.btn,{backgroundColor:"#5384ffff"}]}>
+        <TouchableOpacity onPress={()=> setIsEditing(true)} style={[styles.btn,{backgroundColor:"#5384ffff"}]}>
             <Text style={{color:"#fff", fontWeight:"bold"}}>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.btn, {backgroundColor:"#f41d1dff"}]} onPress={onDelete}>
@@ -47,7 +62,7 @@ const styles = StyleSheet.create({
     },
     completeText:{
         textDecorationLine:"line-through",
-        color:"#888"
+        color:"#888",
     },
     btnContainer:{
         flexDirection:"row",

@@ -6,15 +6,19 @@ import TodoItem from './TodoItem';
 interface TodoListProps {
   todoList: Todo[];
   onDeleteTodo: (id: string) => void;
+  onToggleTodo: (id: string) => void;
+  onEditTodo: (id: string, newText: string) => void;
 }
 
-export default function TodoList({ todoList, onDeleteTodo }: TodoListProps) {
+export default function TodoList({ todoList, onDeleteTodo, onToggleTodo, onEditTodo }: TodoListProps) {
   return (
     <ScrollView style={styles.container}>
       {todoList.map(todo => (
         <TodoItem
           key={todo.id}
-          onDelete={() => onDeleteTodo(todo.id)}
+          onDelete={() => onDeleteTodo(todo?.id)}
+          onToggle ={() => onToggleTodo(todo?.id)}
+          onEdit ={newtext => onEditTodo(todo?.id, newtext)}
           todo={todo}
         />
       ))}

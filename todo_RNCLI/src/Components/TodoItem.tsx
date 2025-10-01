@@ -11,7 +11,7 @@ interface TodoListitems {
 }
 
 export default function TodoItem({todo, onDelete, onEdit, onToggle}:TodoListitems) {
-    //console.log(todo, "todo item component")
+    console.log(todo, "todo item component")
 
     const [isEditing, setIsEditing] = useState(false);
 

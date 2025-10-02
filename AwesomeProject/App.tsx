@@ -7,7 +7,8 @@ import Styling from './src/Components/Styling';
 import Flexes from './src/Components/Flexes';
 import Touchable from './src/Components/touchable';
 
-export default function App(): React.JSX.Element {
+
+ {
   return (
     <View style={style.container}>
       <ScrollView

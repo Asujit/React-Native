@@ -22,6 +22,7 @@ export default function TouchableScreen() {
       </TouchableWithoutFeedback>
 
       <Pressable
+      onPress={()=> setCount(count*2)}
       style={({pressed}) =>[
         styles.btn,
         {

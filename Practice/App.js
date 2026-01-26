@@ -39,11 +39,17 @@ export default function App() {
     { id: 7, title: "Seventh" },
   ];
 
-  const renderItem = ({ item }) => (
+  // const renderItem = ({ item }) => (
+  //   <View style={styles.item}>
+  //     <Text style={styles.itemText}>{item.title}</Text>
+  //   </View>
+  // );
+
+  const renderItem = ({item}) =>(
     <View style={styles.item}>
       <Text style={styles.itemText}>{item.title}</Text>
     </View>
-  );
+  )
 
   const btnPressed = () =>{
     Alert.alert('Button Pressed')

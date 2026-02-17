@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text, View, FlatList } from 'react-native';
-import React,{useState, useEffect} from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
+import React,{useState, useEffect} from 'react'
+import { useNavigation } from '@react-navigation/native'
 import axios from 'axios';
+
 
 export default function Home() {
   const navigation = useNavigation();
@@ -15,34 +16,36 @@ export default function Home() {
       }catch(error){
         console.log(error)
       }finally{
-        console.log("End!!")
+        console.log("Exit !!")
       }
     }
     fetch();
-  }, [])
+  }, []);
 
-  const renderItem = ({item}) =>{
+
+  const re = ({item}) =>{
     return(
-    <View>
-      <Text>{item.id}</Text>
-      <Text>{item.title}</Text>
-    </View>
+      <View>
+        <Text>{item.id}</Text>
+        <Text>{item.title}</Text>
+      </View>
     )
   }
 
   return (
     <View>
-      <Pressable onPress={() => navigation.navigate("Menu")}>
-        <Text>Home</Text>
+      <Pressable onPress={() => navigation.navigate('Menu')}>
+      <Text>Home</Text>
       </Pressable>
 
       <FlatList
       data={data}
-      renderItem={renderItem}
+      renderItem={re}
       keyExtractor={(item) => item.id.toString()}
       />
+
     </View>
-  );
+  )
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

@@ -1,18 +1,26 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { custom } from '../context/UserContext';
+import { useAppSelector } from '../store/hooks';
+
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+}
 
 export default function Home() {
   const navigation = useNavigation();
-  const [data, setData] = useState([]);
-  const {name, newName} = custom();
+  const [data, setData] = useState<Post[]>([]);
+  const { name } = custom();
+  const isDarkMode = useAppSelector((state) => state.theme.isDarkMode);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+        const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
         setData(response.data);
       } catch (error) {
         console.log(error);
@@ -23,25 +31,28 @@ export default function Home() {
     fetch();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemId}>ID: {item.id}</Text>
-      <Text style={styles.itemTitle}>{item.title}</Text>
+  const renderItem = ({ item }: { item: Post }) => (
+    <View style={[styles.itemContainer, isDarkMode && styles.itemContainerDark]}>
+      <Text style={[styles.itemId, isDarkMode && styles.textLight]}>ID: {item.id}</Text>
+      <Text style={[styles.itemTitle, isDarkMode && styles.textLight]}>{item.title}</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode && styles.containerDark]}>
       <Pressable
-        style={({ pressed }) => [styles.menuButton, pressed && styles.menuButtonPressed]}
-        onPress={() => navigation.navigate('Menu')}
+        style={({ pressed }) => [
+          styles.menuButton,
+          pressed && styles.menuButtonPressed,
+          isDarkMode && styles.menuButtonDark,
+        ]}
+        onPress={() => navigation.navigate('Menu' as never)}
       >
         <Text style={styles.menuText}>Menu</Text>
-
       </Pressable>
 
       <View>
-        <Text>Hello, {name}</Text>
+        <Text style={isDarkMode && styles.textLight}>Hello, {name}</Text>
       </View>
 
       <FlatList
@@ -58,8 +69,11 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20, // just a little breathing room
+    paddingTop: 20,
     backgroundColor: '#f2f2f2',
+  },
+  containerDark: {
+    backgroundColor: '#222',
   },
   menuButton: {
     alignSelf: 'center',
@@ -76,6 +90,9 @@ const styles = StyleSheet.create({
   },
   menuButtonPressed: {
     backgroundColor: '#005bb5',
+  },
+  menuButtonDark: {
+    backgroundColor: '#0055aa',
   },
   menuText: {
     color: '#fff',
@@ -99,6 +116,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  itemContainerDark: {
+    backgroundColor: '#333',
+    borderColor: '#555',
+  },
   itemId: {
     fontSize: 14,
     color: '#888',
@@ -109,5 +130,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#222',
     lineHeight: 22,
+  },
+  textLight: {
+    color: '#fff',
   },
 });

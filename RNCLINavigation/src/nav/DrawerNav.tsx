@@ -12,6 +12,7 @@ import { toggleTheme } from '../store/themeSlice';
 import TabsNav from './TabsNav';
 import Menu from '../screens/Menu';
 import Profile from '../screens/Profile';
+import Animation from '../screens/Animation';
 
 const Drawer = createDrawerNavigator();
 
@@ -113,6 +114,14 @@ const DrawerNav = () => {
         options={{
           drawerIcon: ({ color, size }) => <MaterialIcons name="person" color={color} size={size} />,
           title: 'Profile',
+        }}
+      />
+      <Drawer.Screen
+        name="Animation"
+        component={Animation}
+        options={{
+          drawerIcon: ({ color, size }) => <MaterialIcons name="person" color={color} size={size} />,
+          title: 'Animation',
         }}
       />
     </Drawer.Navigator>
